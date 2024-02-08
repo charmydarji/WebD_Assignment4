@@ -109,6 +109,9 @@
 					onclick="customisationsField(this)" />
 				<div id="drinksText" style="display: inline"></div>
 				<br /><br />
+                <div id="error_drinksDropDown" class="error">
+                    Please select a drink option.
+                </div>
 
 				<label for="textField" id="labelCustomisations" style="display: none">Any Additional
 					Customisations*: </label>
@@ -460,18 +463,65 @@
             return validRadio;
         }
 
+    
+        function checkCheckSources(){
+            let em = "error_source";
+            // Assuming 'source' is the name attribute for all checkboxes in the group
+            var checkboxes = document.querySelectorAll('input[name="source"]');
+            var isChecked = Array.from(checkboxes).some(checkbox => checkbox.checked); // Checks if at least one checkbox is checked
+            
+            if (!isChecked) {
+                document.getElementById(em).innerText = "Please select at least one option.";
+                document.getElementById(em).style.display = "block";
+                // Highlight all related checkboxes in red
+                checkboxes.forEach(checkbox => checkbox.style.outline = "2px solid red");
+                validSource = false; // Assuming you have a variable to track validity
+            } else {
+                document.getElementById(em).style.display = "none";
+                // Remove highlight from all related checkboxes
+                checkboxes.forEach(checkbox => checkbox.style.outline = "none");
+                validSource = true; // Assuming you have a variable to track validity
+            }
+            return isChecked;
+        }
+
+        function validateDrinksDropdown() {
+            var drinksDropdown = document.getElementById("drinksDropDown");
+            var errorDiv = document.getElementById("error_drinksDropDown");
+            let validDrinks = false;
+
+            // Check if the default option (with an empty value) is selected
+            if (drinksDropdown.value === "") {
+                // Show error message
+                errorDiv.style.display = "block";
+                drinksDropdown.style.border = "2px solid red"; // Optional: add a visual cue
+                validDrinks = false;
+            } else {
+                // Hide error message
+                errorDiv.style.display = "none";
+                drinksDropdown.style.border = ""; // Remove visual cue if any
+                validDrinks = true;
+            }
+            return validDrinks;
+
+        }
+
 	// function submit
         function submitted(e){
         e.preventDefault();
         var submitFlag = false;
         let validRadio = checkRadioButton();
+        let validSource = checkCheckSources();
+        let validDrinks = validateDrinksDropdown();
         
-	   if(validRadio){
+	    if(validRadio && validSource && validDrinks){
 		  alert("Form Submitted Successfully");
           tableData = e.target;
           populateTable();
           resetForm();
-	   }
+	    }else{
+        document.getElementById("submitBtn").disabled = true;
+       }
     }
 
     // function populate table
