@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <title>Feedback</title>
+  <style>
+    label {	float: left;
+			width: 150px;}
+      #container{
+          width: 700px;
+          margin: auto;
+          background-color: beige;
+      } 
+      main{
+          padding: 50px;
+      }
+      #myTable {
+			border: 2px solid green;
+			border-collapse: collapse;
+			margin: 30px 30px 20px 40px;
+		}
+
+		#myTable td,
+		th {
+			border: 1px solid green;
+			padding: 5px;
+		}
+
+		#myTable th {
+			color: #fff;
+			background-color: #a7c942;
+		}
+  </style>
+ </head>
+ <body>
+ <div id="container">
+	 
+	 <main>
+	 <h2>Feeback</h2>
+	 <h3>Love something? Hate something? Let us know!</h3>
+		 Note : Fields marked with an asterisk(*) are mandatory
+		 <br><br>
+		 <form id="myForm" method="post" novalidate>
+			<label>Title*:</label>
+			<input type="radio" name="title" id="miss" value="miss" required="required"/>Miss
+			<input type="radio" name="title" id="mr" value="mr" required="required"/>Mr.
+			<input type="radio" name="title" id="mrs" value="mrs" required="required"/>Mrs.
+			<div id="error_title" style=" display: none; color: red">
+            </div>
+			<br><br>
+
+			<label for="firstName">First Name*:</label>
+			<input type="text" name="firstName" id="firstName" placeholder="First Name" />	
+			<div id="error_firstName" style=" display: none; color: red">
+            </div>
+			<br><br>
+
+			<label for="lastName">Last Name*:</label>
+			<input type="text" name="lastName" id="lastName" placeholder="Last Name" />
+			<div id="error_lastName" style=" display: none; color: red">
+            </div>
+			<br><br>
+
+			<label for="emailId">Email Id*:</label>
+			<input type="text" name="emailId" id="emailId" placeholder="user@northeastern.com" />
+			<div id="error_emailId" style=" display: none; color: red">
+            </div>
+			<br><br>
+
+			<label for="phoneNumber">Phone Number*:</label>
+			<input type="text" name="phoneNumber" id="phoneNumber" placeholder="xxx-xxx-xxxx" />
+			<div id="error_phoneNumber" style=" display: none; color: red">
+            </div>
+			<br><br>
+
+			<label for="streetAddress">Street Address 1*:</label>
+			<input type="text" name="streetAddress" id="streetAddress" placeholder="Address" required="required" />
+			<div id="error_streetAddress" style=" display: none; color: red">
+            </div>
+			<br><br>
+
+			<label for="streetAddress2">Street Address 2:</label>
+			<input type="text" name="streetAddress2" id="streetAddress2" placeholder="Address" />
+			<br><br>
+			
+            <label for="zipCode">ZipCode*:</label>
+			<input type="text" name="zipCode" id="zipCode" placeholder="xxxxx" />
+			<div id="error_zipCode" style=" display: none; color: red">
+            </div>
+			<br><br>
+             
+            <label for="zipode">How did you hear*:</label>
+			<input type='checkbox' name="source" value="facebook" /> Facebook
+            <input type='checkbox' name="source" value="google" /> Google
+            <input type='checkbox' name="source" value="yelp" /> Yelp 
+			<br><br> 
+
+			<label for="drinksDropDown">Drinks*:</label>
+				<select name="drinksDropDown" id="drinksDropDown" onchange="drinksCheckBox(this)">
+					<option value="">*Select an option*</option>
+					<option value="Hot Black Tea">Hot Black Tea</option>
+					<option value="Cold Coffee">Cold Coffee</option>
+					<option value="Lemon Iced Tea">Lemon Iced Tea</option>
+					<option value="Espresso">Espresso</option>
+					<option value="Latte">Latte</option>
+			</select>
+			<br><br>
+
+			<input type="checkbox" name="check" id="check" style="display: none"
+					onclick="customisationsField(this)" />
+				<div id="drinksText" style="display: inline"></div>
+				<br /><br />
+
+				<label for="textField" id="labelCustomisations" style="display: none">Any Additional
+					Customisations*: </label>
+				<input type="text" name="textField" placeholder="Additional Customisations" id="textField"
+					style="display: none" />
+				<br/><br />
+
+				<div id="error_textField" style="display: none; color: red">
+					Please fill in any customisation details
+					<br />
+					<br />
+				</div>
+             
+			<label for="comments">Comments*:</label>
+			<textarea name="text" id="comments" placeholder="Your comments" rows="5" cols="25"></textarea>
+			<div id="error_comments" style=" display: none; color: red">
+            </div>
+			<br><br>
+
+			<input id="submitBtn" type="Submit" disabled>
+			<input type="Reset">
+			<br><br>
+		 </form>
+	 </main>
+ </div>
+ <table id="myTable">
+    <tr>
+        <th>Title</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email Id</th>
+        <th>Phone</th>
+        <th>Street Address 1</th>
+        <th>Street Address 2</th>
+        <th>Zip</th>
+        <th>Drinks</th>
+        <th>Extras</th>
+        <th>Additional Customisations</th>
+        <th>Comments</th>
+        <th>How did you hear</th>
+    </tr>
+</table>
+ <script> 
+	var form = document.getElementById("myForm");
+	form.addEventListener("submit",submitted);
+
+	var validName = false;
+	var validEmail = false;
+	var validPhone = false;
+    var validAddress = false;
+	var validZip = false;
+    var validComments = false;
+    var tableData;
+    
+	//regular expressions
+
+	var regExName = /^[a-zA-Z]+$/;
+	var regExEmail = /^[a-zA-Z0-9._%+-]+@northeastern\.edu$/;
+	var regExPhone = /\d{3}-?\d{3}-\d{4}$/;
+	var regExstreetAddress = /^[a-zA-Z0-9\s,.'-]{3,}$/;
+	var regExZip = /^\d{5}$/;
+
+    //initialization
+	var firstName = document.getElementById("firstName");
+	firstName.addEventListener("input",validate)
+
+	var lastName = document.getElementById("lastName");
+	lastName.addEventListener("input",validate)
+
+	var emailId = document.getElementById("emailId");
+	emailId.addEventListener("input",validate)
+
+	var phoneNumber = document.getElementById("phoneNumber");
+	phoneNumber.addEventListener("input",validate)
+
+	var streetAddress = document.getElementById("streetAddress");
+	streetAddress.addEventListener("input",validate)
+
+	var zipCode = document.getElementById("zipCode");
+	zipCode.addEventListener("input",validate)
+
+	var comments = document.getElementById("comments");
+	comments.addEventListener("input",validate)
+
+    var textField = document.getElementById("textField");
+	textField.addEventListener("input",validate)
+
+	//function validate
+	function validate(e){
+	   var value = e.target.value;
+	   var type = this.id;
+	   var em = "error_" + type;
+	   switch (type) {
+			   case "firstName":
+				if (!value.trim()) {
+                    document.getElementById(em).innerText = "First Name is required.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validName = false;
+                } else if (!value.trim().match(regExName)) {
+                    document.getElementById(em).innerText = "Invalid name, please enter valid name.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validName = false;
+                } else if (value.length < 2) {
+                    document.getElementById(em).innerText = "First Name must be at least 2 characters long.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validName = false;
+                } else if (value.length > 10) {
+                    document.getElementById(em).innerText = "First Name must not exceed 10 characters.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validName = false;
+                } else {
+                    document.getElementById(em).style.display = "none";
+                    this.style.border = "";
+                    validName = true;
+                }
+                break;
+				case "lastName":
+				if (!value.trim()) {
+                    document.getElementById(em).innerText = "Last Name is required.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validName = false;
+                } else if (!value.trim().match(regExName)) {
+                    document.getElementById(em).innerText = "Invalid last name, please enter valid name.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validName = false;
+                } else if (value.length < 2) {
+                    document.getElementById(em).innerText = "Last Name must be at least 2 characters long.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validName = false;
+                } else if (value.length > 10) {
+                    document.getElementById(em).innerText = "Last Name must not exceed 10 characters.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validName = false;
+                } else {
+                    document.getElementById(em).style.display = "none";
+                    this.style.border = "";
+                    validName = true;
+                }
+                break;
+				case "emailId":
+				if (!value.trim()) {
+                    document.getElementById(em).innerText = "Email is required.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validEmail = false;
+                 } else if (!value.trim().match(regExEmail)) {
+                    document.getElementById(em).innerText = "Please enter a valid Northeastern University email (e.g., yourname@northeastern.edu).";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validEmail = false;
+                 } else {
+                    document.getElementById(em).style.display = "none";
+                    this.style.border = "";
+                    validEmail = true;
+                 }
+                break;
+				case "phoneNumber":
+                 if (!value.trim()) {
+                    document.getElementById(em).innerText = "Phone number is required.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validPhone = false;
+                 } else if (!value.trim().match(regExPhone)) {
+                    document.getElementById(em).innerText = "Invalid phone number, please enter a valid 10-digit phone number.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validPhone = false;
+                 } else if (value.length > 12) {
+                    document.getElementById(em).innerText = "Phone Number must not exceed 10 numbers.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validName = false;
+                } else {
+                    document.getElementById(em).style.display = "none";
+                    this.style.border = "";
+                    validPhone = true;
+                 }
+                 break;
+				 case "streetAddress":
+                 if (!value.trim()) {
+                    document.getElementById(em).innerText = "Street Address is required.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validAddress = false;
+                } else if (!value.trim().match(regExstreetAddress)) {
+                    document.getElementById(em).innerText = "Invalid street address, please enter a valid address.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validAddress = false;
+                } else if (value.length > 20) {
+                    document.getElementById(em).innerText = "Street Address 1 must not exceed 20 numbers.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validName = false;
+                } else {
+                    document.getElementById(em).style.display = "none";
+                    this.style.border = "";
+                    validAddress = true;
+                }
+                break;
+				case "zipCode":
+                if (!value.trim()) {
+                     document.getElementById(em).innerText = "Zip Code is required.";
+                     document.getElementById(em).style.display = "block";
+                     this.style.border = "2px solid red";
+                     validZip = false;
+                } else if (value.length > 5) {
+                    document.getElementById(em).innerText = "Zip Code must not exceed 5 numbers.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validName = false;
+                } else if (!value.trim().match(regExZip)) {
+                     document.getElementById(em).innerText = "Invalid Zip Code, please enter a valid 5-digit";
+                     document.getElementById(em).style.display = "block";
+                     this.style.border = "2px solid red";
+                     validZip = false;
+                } else {
+                     document.getElementById(em).style.display = "none";
+                     this.style.border = "";
+                     validZip = true;
+                }
+			    break;
+				case "comments":
+                if (!value.trim()) {
+                    document.getElementById(em).innerText = "Comments cannot be empty.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validComments = false;
+                } else if (value.length > 50) {
+                    document.getElementById(em).innerText = "Comments must not exceed 50 characters.";
+                    document.getElementById(em).style.display = "block";
+                    this.style.border = "2px solid red";
+                    validComments = false;
+                } else {
+                    document.getElementById(em).style.display = "none";
+                    this.style.border = "";
+                    validComments = true;
+                }
+                break;
+				case "radio":
+                var radioButtons = document.getElementsByName('title'); 
+                var isSelected = false;
+
+                for (var i = 0; i < radioButtons.length; i++) {
+                    if (radioButtons[i].checked) {
+                        isSelected = true;
+                        break;
+                    }
+                }
+
+                if (!isSelected) {
+                    document.getElementById(em).innerText = "Please select one of the options.";
+                    document.getElementById(em).style.display = "block";
+        
+                    validRadio = false;
+                } else {
+                    document.getElementById(em).style.display = "none";
+                    validRadio = true;
+                }
+                break;
+                case "textField":
+					if (value.trim() == "") {
+						document.getElementById(em).style.display = "block";
+						this.style.border = "2px solid red";
+						validCustomisations = false;
+					}
+					else {
+						document.getElementById(em).style.display = "none";
+						this.style.border = "";
+						validCustomisations = true;
+					}
+				break;
+	            }
+	   
+	   if (validName && validEmail && validPhone && validZip && validComments && validAddress) {
+            document.getElementById("submitBtn").disabled = false;
+        } else {
+            document.getElementById("submitBtn").disabled = true;
+        }
+	}
+	
+    //function drinks checkbox               
+	function drinksCheckBox(selectObject) {
+		if (selectObject.value == "") {
+				document.getElementById("check").style.display = "none";
+				document.getElementById("drinksText").innerHTML = "";
+		} else {
+				document.getElementById("check").style.display = "inline";
+				var selectedText = selectObject.value + " - Large ($1 extra)";
+				document.getElementById("check").value = selectedText;
+				document.getElementById("drinksText").innerHTML = selectedText;
+		}
+	}
+    
+    //function customization field 
+	function customisationsField(input) {
+		if (input.checked) {
+				document.getElementById("labelCustomisations").style.display = "block";
+				document.getElementById("textField").style.display = "block";
+				document.getElementById("textField").required = true;
+		} else {
+				document.getElementById("labelCustomisations").style.display = "none";
+				document.getElementById("textField").style.display = "none";
+				document.getElementById("error_textField").style.display = "none";
+				document.getElementById("textField").required = false;
+				document.getElementById("textField").style.border = "";
+				document.getElementById("textField").value = "";
+		}
+	}
+         
+    // function reset form
+	function resetForm() {
+		document.getElementById("myForm").reset();
+		document.getElementById("check").style.display = "none";
+		document.getElementById("drinksText").innerHTML = "";
+		document.getElementById("labelCustomisations").style.display = "none";
+		document.getElementById("textField").style.display = "none";
+	}
+
+    // function check radio button   
+    function checkRadioButton(){
+            var radioButtons = document.getElementsByName('title'); 
+            var isSelected = false;
+            let validRadio = false;
+
+            for (var i = 0; i < radioButtons.length; i++) {
+                if (radioButtons[i].checked) {
+                    isSelected = true;
+                    break;
+                }
+            }
+            if (!isSelected) {
+                document.getElementById("error_title").innerText = "Please select one of the options.";
+                document.getElementById("error_title").style.display = "block";
+
+                validRadio = false;
+            } else {
+                document.getElementById("error_title").style.display = "none";
+                validRadio = true;
+            }
+            return validRadio;
+        }
+
+	// function submit
+        function submitted(e){
+        e.preventDefault();
+        var submitFlag = false;
+        let validRadio = checkRadioButton();
+        
+	   if(validRadio){
+		  alert("Form Submitted Successfully");
+          tableData = e.target;
+          populateTable();
+          resetForm();
+	   }
+    }
+
+    // function populate table
+    function populateTable() {
+    var form = document.getElementById("myForm"); 
+    var table = document.getElementById("myTable");
+    var tr = document.createElement("tr");
+
+    Array.from(form.elements).forEach(function(element) {
+        if (element.name === "source") {
+            return;
+        }
+
+        if (element.type !== 'submit' && element.type !== 'reset' && element.type !== 'button' && !(element.type === 'radio' && !element.checked)) {
+            var td = document.createElement("td");
+            var value = element.value;
+
+            if (element.type === 'radio') {
+                value = element.checked ? element.value : 'NA'; 
+            }
+
+            if (value === '') {
+                value = 'NA'; 
+            }
+
+            var textNode = document.createTextNode(value);
+            td.appendChild(textNode);
+            tr.appendChild(td);
+        }
+    });
+
+    // Handle 'How did you hear' checkboxes separately
+    var sources = Array.from(document.querySelectorAll('input[name="source"]:checked'))
+                        .map(function(checkbox) { return checkbox.value; })
+                        .join(', '); 
+    var sourcesTd = document.createElement("td");
+    var sourcesTextNode = document.createTextNode(sources || 'NA');
+    sourcesTd.appendChild(sourcesTextNode);
+    tr.appendChild(sourcesTd);
+    table.appendChild(tr);
+}
+
+   </script>
+ </body>
+</html>
